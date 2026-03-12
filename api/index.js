@@ -1,6 +1,5 @@
 // Vercel Serverless entry point
-// Variables de entorno se inyectan directamente por Vercel (no necesitamos .env)
-require('../backend/db');
+const connectDB = require('../backend/db');
 
 const express = require('express');
 const cors = require('cors');
@@ -21,6 +20,17 @@ app.use(morgan('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
+
+// Ensure DB is connected before handling any request
+app.use(async (req, res, next) => {
+  try {
+    await connectDB();
+    next();
+  } catch (err) {
+    console.error('Database connection error:', err);
+    res.status(500).json({ message: 'Database connection failed' });
+  }
+});
 
 // Rutas
 const indexRoutes = require('../backend/routes/index.routes');
