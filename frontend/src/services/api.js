@@ -78,26 +78,37 @@ export async function fetchPlantInfo(prompt) {
   return data;
 }
 
-export async function login(email, password) {
+export async function login(emailOrUsername, password) {
   const res = await fetch('/auth/login', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ email, password }),
+    body: JSON.stringify({ emailOrUsername, password }),
   });
   const data = await res.json();
   if (!res.ok) throw new Error(data.message || 'Error al iniciar sesión');
   return data;
 }
 
-export async function signup(email, password, firstName, lastName) {
+export async function signup(email, password, firstName, lastName, username) {
   const res = await fetch('/auth/signup', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ email, password, firstName, lastName }),
+    body: JSON.stringify({ email, password, firstName, lastName, username }),
   });
   const data = await res.json();
   if (!res.ok) throw new Error(data.message || 'Error al registrarse');
   return data;
+}
+
+export async function updateProfile(data) {
+  const res = await fetch('/auth/profile', {
+    method: 'PUT',
+    headers: getAuthHeaders(),
+    body: JSON.stringify(data),
+  });
+  const result = await res.json();
+  if (!res.ok) throw new Error(result.message || 'Error al actualizar perfil');
+  return result;
 }
 
 export async function verifyToken() {

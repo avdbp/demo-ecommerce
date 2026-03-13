@@ -15,11 +15,15 @@ export function AuthProvider({ children }) {
       .finally(() => setLoading(false))
   }, [])
 
-  const login = async (email, password) => {
-    const data = await apiLogin(email, password)
+  const login = async (emailOrUsername, password) => {
+    const data = await apiLogin(emailOrUsername, password)
     localStorage.setItem('authToken', data.authToken)
     const payload = await verifyToken()
     setUser(payload)
+  }
+
+  const updateUser = (userData) => {
+    setUser((prev) => (prev ? { ...prev, ...userData } : null))
   }
 
   const logout = () => {
@@ -34,6 +38,7 @@ export function AuthProvider({ children }) {
     loading,
     login,
     logout,
+    updateUser,
   }
 
   return (

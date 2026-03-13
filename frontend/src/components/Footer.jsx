@@ -2,30 +2,24 @@ import { Link } from 'react-router-dom'
 
 export default function Footer() {
   return (
-    <footer className="bg-green-dark text-white mt-auto">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <footer className="bg-neutral-800 text-white mt-auto">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 py-12">
         <div className="flex flex-col md:flex-row justify-between items-start gap-8">
           <div>
-            <h3 className="font-playfair text-2xl font-semibold mb-2">Floristería</h3>
-            <p className="text-green-light/90 text-sm">Flores y plantas con alma, desde Barcelona</p>
+            <h3 className="font-sans text-lg font-bold mb-2">Floristería Roquetes</h3>
+            <p className="text-neutral-400 text-sm">Demo Ecommerce · Flores y plantas en Barcelona</p>
           </div>
           <div className="flex flex-col gap-2">
-            <Link to="/plantas" className="text-green-light/90 hover:text-white transition-colors">
-              Plantas
-            </Link>
-            <Link to="/flores" className="text-green-light/90 hover:text-white transition-colors">
-              Flores
-            </Link>
-            <a href="#contacto" className="text-green-light/90 hover:text-white transition-colors">
-              Contacto
-            </a>
+            <Link to="/plantas" className="text-neutral-400 hover:text-white text-sm transition-colors">Plantas</Link>
+            <Link to="/flores" className="text-neutral-400 hover:text-white text-sm transition-colors">Flores</Link>
+            <a href="#contacto" className="text-neutral-400 hover:text-white text-sm transition-colors">Contacto</a>
           </div>
-          <div className="text-green-light/90 text-sm">
+          <div className="text-neutral-300 text-sm">
             <p>Carrer de Provensals 159</p>
             <p>Barcelona</p>
           </div>
         </div>
-        <div className="mt-8 pt-8 border-t border-green-mid/30 text-center text-green-light/80 text-sm">
+        <div className="mt-8 pt-8 border-t border-neutral-600 text-center text-neutral-400 text-sm">
           © 2024 Floristería
         </div>
       </div>

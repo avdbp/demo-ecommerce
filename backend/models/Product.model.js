@@ -12,6 +12,7 @@ const ProductSchema = new Schema(
     imagen: String,
     aidescripcion: String,
     favorito: { type: Boolean, default: false },
+    ubicacion: [{ type: String, enum: ['interior', 'exterior'] }],
   },
   { timestamps: true }
 );

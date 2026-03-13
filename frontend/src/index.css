@@ -4,9 +4,9 @@
 
 @layer base {
   body {
-    @apply font-dm-sans text-charcoal bg-cream;
+    @apply font-sans text-neutral-700 bg-neutral-50 antialiased;
   }
   h1, h2, h3, h4, h5, h6 {
-    @apply font-playfair;
+    @apply font-sans font-semibold text-neutral-900;
   }
 }

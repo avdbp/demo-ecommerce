@@ -7,8 +7,8 @@ export default function AdminRoute({ children }) {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <p className="text-charcoal p-8">Cargando...</p>
+      <div className="min-h-screen flex items-center justify-center bg-neutral-50">
+        <p className="text-neutral-600 p-8">Cargando...</p>
       </div>
     )
   }

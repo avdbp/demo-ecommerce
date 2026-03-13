@@ -1,13 +1,17 @@
 import { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate, useLocation } from 'react-router-dom'
 import { useCart } from '../context/CartContext.jsx'
+import { useAuth } from '../context/AuthContext.jsx'
 
 export default function ProductCard({ product, offers = [] }) {
   const { addToCart } = useCart()
+  const { isLoggedIn } = useAuth()
+  const navigate = useNavigate()
+  const location = useLocation()
   const [added, setAdded] = useState(false)
   const { _id, nombre, categoria, precio, imagen, amount } = product
-  const inStock = (amount ?? 0) > 0
   const isPlanta = categoria === 'plantas' || categoria === 'planta'
+  const inStock = (amount ?? 0) > 0
 
   const productIdStr = _id?.toString?.() ?? String(_id)
   const offer = offers.find((o) => {
@@ -18,6 +22,10 @@ export default function ProductCard({ product, offers = [] }) {
   const handleAddToCart = (e) => {
     e.preventDefault()
     if (!inStock) return
+    if (!isLoggedIn) {
+      navigate('/login', { state: { from: location.pathname } })
+      return
+    }
     const productToAdd = (offer?.offerType === 'precio' && offer?.offerPrice != null)
       ? { ...product, precio: offer.offerPrice }
       : product
@@ -27,93 +35,72 @@ export default function ProductCard({ product, offers = [] }) {
   }
 
   return (
-    <div className="group bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300">
-      <Link to={`/product/${_id}`}>
+    <div className="bg-white rounded-xl border border-neutral-200 overflow-hidden shadow-card hover:shadow-card-hover transition-shadow duration-300 flex flex-col">
+      <Link to={`/product/${_id}`} className="block">
         <div className="aspect-square overflow-hidden">
           <img
             src={imagen}
             alt={nombre}
-            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+            className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
           />
         </div>
         <div className="p-4">
           <span className={`inline-block px-2 py-0.5 rounded text-xs font-medium mb-2 ${
-            isPlanta ? 'bg-green-light/20 text-green-dark' : 'bg-blush text-charcoal'
+            isPlanta ? 'bg-primary-100 text-primary-700' : 'bg-accent-100 text-accent-600'
           }`}>
             {isPlanta ? 'Planta' : 'Ramo'}
           </span>
-          <h3 className="font-playfair text-lg font-semibold text-charcoal mb-1">{nombre}</h3>
+          <h3 className="font-semibold text-neutral-900 mb-1">{nombre}</h3>
           {offer ? (
             <div className="mb-2">
-              {isPlanta ? (
-                <p className="font-semibold">
-                  <span className="line-through text-red-600 mr-2">€{precio}</span>
-                  {offer.offerType === 'precio' ? (
-                    <span className="text-red-600">€{offer.offerPrice}</span>
-                  ) : (
-                    <>
-                      <span className="text-charcoal/80">en oferta </span>
-                      {offer.offerType === 'si_llevas' ? (
-                        <span>Si llevas {offer.buyX} vale €{offer.payY}</span>
-                      ) : (
-                        <span>{offer.offerText}</span>
-                      )}
-                    </>
-                  )}
+              {offer.offerType === 'precio' ? (
+                <p>
+                  <span className="line-through text-neutral-400 mr-2">€{precio}</span>
+                  <span className="font-semibold text-primary-600">€{offer.offerPrice}</span>
                 </p>
               ) : (
-                <>
-                  <p className="text-green-mid font-semibold mb-0.5">
-                    €{precio} por unidad · €{(precio * 12).toFixed(2)} por docena
-                  </p>
-                  <p className="text-sm">
-                    <span className="text-red-600 font-medium">En oferta </span>
-                    {offer.offerType === 'precio' ? (
-                      <span className="text-red-600 font-semibold">€{offer.offerPrice}</span>
-                    ) : offer.offerType === 'si_llevas' ? (
-                      <span>Si llevas {offer.buyX} vale €{offer.payY}</span>
-                    ) : (
-                      <span>{offer.offerText}</span>
-                    )}
-                  </p>
-                  {offer.offerType === 'precio' && (
-                    <p className="text-xs text-charcoal/80">€{(offer.offerPrice * 12).toFixed(2)} por docena en oferta</p>
-                  )}
-                </>
+                <p className="text-sm text-neutral-600">
+                  {offer.offerType === 'si_llevas' ? `Si llevas ${offer.buyX} vale €${offer.payY}` : offer.offerText}
+                </p>
               )}
             </div>
           ) : isPlanta ? (
-            <p className="text-green-mid font-semibold mb-2">€{precio}</p>
+            <p className="font-semibold text-primary-600">€{precio}</p>
           ) : (
-            <div className="text-green-mid font-semibold mb-2 space-y-0.5">
-              <p>€{precio} por unidad</p>
-              <p className="text-sm font-medium text-charcoal/80">€{(precio * 12).toFixed(2)} por docena</p>
+            <div className="text-sm">
+              <p className="font-semibold text-primary-600">€{precio} unidad</p>
+              <p className="text-neutral-500">€{(precio * 12).toFixed(2)} docena</p>
             </div>
           )}
-          <span className={`inline-block px-2 py-0.5 rounded text-xs ${
-            inStock ? 'bg-green-light/20 text-green-dark' : 'bg-red-100 text-red-700'
+          <span className={`inline-block px-2 py-0.5 rounded text-xs font-medium mt-1 ${
+            inStock ? 'bg-primary-100 text-primary-700' : 'bg-red-100 text-red-600'
           }`}>
-            {inStock ? 'En stock' : 'Agotado'}
+            {inStock ? 'En stock' : 'Sin stock'}
           </span>
         </div>
       </Link>
-      <div className="px-4 pb-4 space-y-2">
+      <div className="mt-auto px-4 pb-4 flex gap-2" onClick={(e) => e.stopPropagation()}>
         <Link
           to={`/product/${_id}`}
-          className="block w-full text-center py-2 bg-green-mid text-white rounded-lg hover:bg-green-dark transition-colors text-sm font-medium"
+          className="flex-1 text-center py-2.5 border border-neutral-300 text-neutral-700 rounded-lg hover:bg-neutral-50 font-medium text-sm transition-colors"
         >
-          Ver detalle
+          Ver
         </Link>
         <button
-          onClick={handleAddToCart}
+          type="button"
+          onClick={(e) => {
+            e.preventDefault()
+            e.stopPropagation()
+            handleAddToCart(e)
+          }}
           disabled={!inStock}
-          className={`w-full py-2 rounded-lg text-sm font-medium transition-colors ${
+          className={`flex-1 py-2.5 rounded-lg text-sm font-medium transition-colors ${
             inStock
-              ? 'bg-white border-2 border-green-mid text-green-mid hover:bg-green-light/10'
-              : 'bg-gray-200 text-gray-500 cursor-not-allowed border-2 border-transparent'
-          } ${added ? 'bg-green-dark text-white border-green-dark' : ''}`}
+              ? 'bg-primary-500 text-white hover:bg-primary-600'
+              : 'bg-neutral-300 text-neutral-500 cursor-not-allowed'
+          } ${added ? 'bg-primary-600' : ''}`}
         >
-          {added ? '¡Añadido!' : 'Añadir al carrito'}
+          {added ? '✓ Añadido' : 'Añadir al carrito'}
         </button>
       </div>
     </div>

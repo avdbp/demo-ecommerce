@@ -1,12 +1,11 @@
 import { useState, useEffect } from 'react'
 import { Link, useParams, useNavigate } from 'react-router-dom'
-import { useAuth } from '../../context/AuthContext.jsx'
+import AdminLayout from '../../components/AdminLayout.jsx'
 import { fetchOffer, fetchProducts, updateOffer } from '../../services/api.js'
 
 export default function AdminEditOffer() {
   const { id } = useParams()
   const navigate = useNavigate()
-  const { logout } = useAuth()
   const [products, setProducts] = useState([])
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
@@ -85,73 +84,30 @@ export default function AdminEditOffer() {
     }
   }
 
-  if (loading) return <p className="p-8 text-charcoal">Cargando...</p>
+  if (loading) return <AdminLayout title="Editar oferta"><p className="text-neutral-600">Cargando...</p></AdminLayout>
   if (error && !form.title) {
     return (
-      <div className="p-8">
+      <AdminLayout title="Editar oferta">
         <p className="text-red-600 mb-4">{error}</p>
-        <Link to="/admin/offers" className="text-green-mid hover:underline">Volver a Ofertas</Link>
-      </div>
+        <Link to="/admin/offers" className="text-primary-600 hover:underline">Volver a Ofertas</Link>
+      </AdminLayout>
     )
   }
 
   return (
-    <div className="flex min-h-screen">
-      <aside className="w-64 bg-green-dark text-white p-6 flex flex-col">
-        <Link to="/" className="font-playfair text-xl font-semibold mb-8 block text-white hover:text-green-light">
-          Inicio
-        </Link>
-        <nav className="space-y-2 flex-1">
-          <Link to="/admin/products" className="block py-2 text-green-light/90 hover:text-white transition-colors">
-            Productos
-          </Link>
-          <Link to="/admin/add-product" className="block py-2 text-green-light/90 hover:text-white transition-colors">
-            Añadir producto
-          </Link>
-          <Link to="/admin/offers" className="block py-2 text-white font-medium">
-            Ofertas
-          </Link>
-          <Link to="/admin/add-offer" className="block py-2 text-green-light/90 hover:text-white transition-colors">
-            Crear oferta
-          </Link>
-          <Link to="/admin/orders" className="block py-2 text-green-light/90 hover:text-white transition-colors">
-            Pedidos
-          </Link>
-        </nav>
-        <button
-          onClick={() => { logout(); navigate('/') }}
-          className="mt-4 py-2 text-green-light/90 hover:text-white transition-colors text-left"
-        >
-          Cerrar sesión
-        </button>
-      </aside>
-      <main className="flex-1 p-8 bg-cream">
-        <h1 className="font-playfair text-2xl font-bold text-charcoal mb-8">Editar oferta</h1>
-        <div className="bg-white rounded-xl shadow-sm p-6 max-w-2xl">
-          {error && (
-            <p className="mb-4 p-3 bg-red-50 text-red-700 rounded-lg text-sm">{error}</p>
-          )}
-          <form onSubmit={handleSubmit} className="space-y-6">
-            <div>
-              <label className="block text-sm font-medium text-charcoal mb-2">Título de la oferta *</label>
-              <input
-                name="title"
-                type="text"
-                required
-                value={form.title}
-                onChange={handleChange}
-                className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-green-mid outline-none"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-charcoal mb-2">Producto *</label>
-              <select
-                name="product"
-                required
-                value={form.product}
-                onChange={handleChange}
-                className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-green-mid outline-none"
-              >
+    <AdminLayout title="Editar oferta">
+      <div className="bg-white rounded-xl shadow-card p-6 max-w-2xl">
+        {error && (
+          <p className="mb-4 p-3 bg-red-50 text-red-700 rounded-lg text-sm">{error}</p>
+        )}
+        <form onSubmit={handleSubmit} className="space-y-6">
+          <div>
+            <label className="block text-sm font-medium text-neutral-900 mb-2">Título de la oferta *</label>
+            <input name="title" type="text" required value={form.title} onChange={handleChange} className="w-full px-4 py-2 border border-neutral-200 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none" />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-neutral-900 mb-2">Producto *</label>
+            <select name="product" required value={form.product} onChange={handleChange} className="w-full px-4 py-2 border border-neutral-200 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none">
                 <option value="">Selecciona un producto</option>
                 {products.map((p) => (
                   <option key={p._id} value={p._id}>
@@ -160,134 +116,63 @@ export default function AdminEditOffer() {
                 ))}
               </select>
             </div>
-            <div>
-              <label className="block text-sm font-medium text-charcoal mb-2">Tipo de oferta *</label>
-              <select
-                name="offerType"
-                value={form.offerType}
-                onChange={handleChange}
-                className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-green-mid outline-none"
-              >
+          <div>
+            <label className="block text-sm font-medium text-neutral-900 mb-2">Tipo de oferta *</label>
+            <select name="offerType" value={form.offerType} onChange={handleChange} className="w-full px-4 py-2 border border-neutral-200 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none">
                 <option value="precio">Oferta de precio</option>
                 <option value="si_llevas">Si llevas X vale Y</option>
                 <option value="especial">Oferta especial</option>
               </select>
             </div>
-            {form.offerType === 'precio' && (
+          {form.offerType === 'precio' && (
+            <div>
+              <label className="block text-sm font-medium text-neutral-900 mb-2">Precio en oferta (€) *</label>
+              <input name="offerPrice" type="number" required min="0" step="0.01" value={form.offerPrice} onChange={handleChange} className="w-full px-4 py-2 border border-neutral-200 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none" />
+            </div>
+          )}
+          {form.offerType === 'si_llevas' && (
+            <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-charcoal mb-2">Precio en oferta (€) *</label>
-                <input
-                  name="offerPrice"
-                  type="number"
-                  required
-                  min="0"
-                  step="0.01"
-                  value={form.offerPrice}
-                  onChange={handleChange}
-                  className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-green-mid outline-none"
-                />
+                <label className="block text-sm font-medium text-neutral-900 mb-2">Si llevas (cantidad) *</label>
+                <input name="buyX" type="number" required min="1" value={form.buyX} onChange={handleChange} className="w-full px-4 py-2 border border-neutral-200 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none" />
               </div>
-            )}
-            {form.offerType === 'si_llevas' && (
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-charcoal mb-2">Si llevas (cantidad) *</label>
-                  <input
-                    name="buyX"
-                    type="number"
-                    required
-                    min="1"
-                    value={form.buyX}
-                    onChange={handleChange}
-                    className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-green-mid outline-none"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-charcoal mb-2">Vale (€) *</label>
-                  <input
-                    name="payY"
-                    type="number"
-                    required
-                    min="0"
-                    step="0.01"
-                    value={form.payY}
-                    onChange={handleChange}
-                    className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-green-mid outline-none"
-                  />
-                </div>
-              </div>
-            )}
-            {form.offerType === 'especial' && (
               <div>
-                <label className="block text-sm font-medium text-charcoal mb-2">Texto de la oferta *</label>
-                <textarea
-                  name="offerText"
-                  required
-                  rows={4}
-                  value={form.offerText}
-                  onChange={handleChange}
-                  className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-green-mid outline-none"
-                />
-              </div>
-            )}
-            <div className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-charcoal mb-2">Fecha de inicio *</label>
-                <input
-                  name="startDate"
-                  type="date"
-                  required
-                  value={form.startDate}
-                  onChange={handleChange}
-                  className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-green-mid outline-none"
-                />
-              </div>
-              <div className="flex items-center gap-2">
-                <input
-                  id="useEndDate"
-                  name="useEndDate"
-                  type="checkbox"
-                  checked={form.useEndDate}
-                  onChange={handleChange}
-                  className="rounded border-gray-300"
-                />
-                <label htmlFor="useEndDate" className="text-sm text-charcoal">Usar periodo de fechas</label>
-              </div>
-              {form.useEndDate && (
-                <div>
-                  <label className="block text-sm font-medium text-charcoal mb-2">Fecha de fin</label>
-                  <input
-                    name="endDate"
-                    type="date"
-                    min={form.startDate}
-                    value={form.endDate}
-                    onChange={handleChange}
-                    className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-green-mid outline-none"
-                  />
-                </div>
-              )}
-              <div className="flex items-center gap-2">
-                <input
-                  id="active"
-                  name="active"
-                  type="checkbox"
-                  checked={form.active}
-                  onChange={handleChange}
-                  className="rounded border-gray-300"
-                />
-                <label htmlFor="active" className="text-sm text-charcoal">Oferta activa</label>
+                <label className="block text-sm font-medium text-neutral-900 mb-2">Vale (€) *</label>
+                <input name="payY" type="number" required min="0" step="0.01" value={form.payY} onChange={handleChange} className="w-full px-4 py-2 border border-neutral-200 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none" />
               </div>
             </div>
-            <button
-              type="submit"
-              disabled={saving}
-              className="px-6 py-2 bg-green-mid text-white rounded-lg hover:bg-green-dark transition-colors disabled:opacity-50"
-            >
-              {saving ? 'Guardando...' : 'Guardar'}
-            </button>
-          </form>
-        </div>
-      </main>
-    </div>
+          )}
+          {form.offerType === 'especial' && (
+            <div>
+              <label className="block text-sm font-medium text-neutral-900 mb-2">Texto de la oferta *</label>
+              <textarea name="offerText" required rows={4} value={form.offerText} onChange={handleChange} className="w-full px-4 py-2 border border-neutral-200 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none" />
+            </div>
+          )}
+          <div className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium text-neutral-900 mb-2">Fecha de inicio *</label>
+              <input name="startDate" type="date" required value={form.startDate} onChange={handleChange} className="w-full px-4 py-2 border border-neutral-200 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none" />
+            </div>
+            <div className="flex items-center gap-2">
+              <input id="useEndDate" name="useEndDate" type="checkbox" checked={form.useEndDate} onChange={handleChange} className="rounded border-neutral-300" />
+              <label htmlFor="useEndDate" className="text-sm text-neutral-900">Usar periodo de fechas</label>
+            </div>
+            {form.useEndDate && (
+              <div>
+                <label className="block text-sm font-medium text-neutral-900 mb-2">Fecha de fin</label>
+                <input name="endDate" type="date" min={form.startDate} value={form.endDate} onChange={handleChange} className="w-full px-4 py-2 border border-neutral-200 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none" />
+              </div>
+            )}
+            <div className="flex items-center gap-2">
+              <input id="active" name="active" type="checkbox" checked={form.active} onChange={handleChange} className="rounded border-neutral-300" />
+              <label htmlFor="active" className="text-sm text-neutral-900">Oferta activa</label>
+            </div>
+          </div>
+          <button type="submit" disabled={saving} className="px-6 py-2 bg-primary-500 text-white rounded-lg hover:bg-primary-600 transition-colors disabled:opacity-50 font-medium">
+            {saving ? 'Guardando...' : 'Guardar'}
+          </button>
+        </form>
+      </div>
+    </AdminLayout>
   )
 }

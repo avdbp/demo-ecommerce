@@ -6,7 +6,7 @@ const { isAdmin } = require('../middleware/isAdmin.middleware.js');
 
 // Crear producto (admin)
 router.post('/', isAuthenticated, isAdmin, (req, res) => {
-  const { nombre, descripcion, precio, categoria, imagen, amount, favorito } = req.body;
+  const { nombre, descripcion, precio, categoria, imagen, amount, favorito, ubicacion } = req.body;
 
   if (!nombre || !precio || !categoria) {
     return res.status(400).json({ error: 'Nombre, precio y categoría son obligatorios' });
@@ -16,6 +16,8 @@ router.post('/', isAuthenticated, isAdmin, (req, res) => {
     return res.status(400).json({ error: 'Categoría debe ser "plantas" o "ramos"' });
   }
 
+  const ubicacionArr = Array.isArray(ubicacion) ? ubicacion.filter((u) => ['interior', 'exterior'].includes(u)) : [];
+
   Product.create({
     nombre,
     descripcion: descripcion || '',
@@ -23,6 +25,7 @@ router.post('/', isAuthenticated, isAdmin, (req, res) => {
     categoria,
     imagen: imagen || '',
     favorito: !!favorito,
+    ubicacion: ubicacionArr,
   })
     .then((product) => {
       return Storage.create({ product: product._id, amount: Number(amount) || 0 }).then(() => product);
@@ -56,7 +59,7 @@ router.get('/', (req, res) => {
 // Actualizar producto (admin)
 router.put('/:id', isAuthenticated, isAdmin, (req, res) => {
   const { id } = req.params;
-  const { nombre, descripcion, precio, categoria, imagen, amount, favorito } = req.body;
+  const { nombre, descripcion, precio, categoria, imagen, amount, favorito, ubicacion } = req.body;
 
   if (!nombre || precio === undefined || !categoria) {
     return res.status(400).json({ error: 'Nombre, precio y categoría son obligatorios' });
@@ -66,6 +69,8 @@ router.put('/:id', isAuthenticated, isAdmin, (req, res) => {
     return res.status(400).json({ error: 'Categoría debe ser "plantas" o "ramos"' });
   }
 
+  const ubicacionArr = Array.isArray(ubicacion) ? ubicacion.filter((u) => ['interior', 'exterior'].includes(u)) : [];
+
   Product.findByIdAndUpdate(
     id,
     {
@@ -74,6 +79,7 @@ router.put('/:id', isAuthenticated, isAdmin, (req, res) => {
       precio: Number(precio),
       categoria,
       imagen: imagen || '',
+      ubicacion: ubicacionArr,
       ...(favorito !== undefined && { favorito: !!favorito }),
     },
     { new: true }
