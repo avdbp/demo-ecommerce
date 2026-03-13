@@ -6,7 +6,7 @@ export default function Footer() {
       <div className="max-w-6xl mx-auto px-4 sm:px-6 py-12">
         <div className="flex flex-col md:flex-row justify-between items-start gap-8">
           <div>
-            <h3 className="font-sans text-lg font-bold mb-2">Floristería Roquetes</h3>
+            <h3 className="font-sans text-lg font-bold mb-2 text-neutral-400">Floristería Roquetes</h3>
             <p className="text-neutral-400 text-sm">Demo Ecommerce · Flores y plantas en Barcelona</p>
           </div>
           <div className="flex flex-col gap-2">
