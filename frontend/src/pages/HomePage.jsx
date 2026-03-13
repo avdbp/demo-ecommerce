@@ -68,7 +68,7 @@ export default function HomePage() {
   return (
     <div>
       {/* Hero */}
-      <section className="relative h-[70vh] min-h-[500px] flex items-center justify-center overflow-hidden">
+      <section className="relative min-h-[500px] md:min-h-[70vh] flex items-center justify-center overflow-x-hidden py-20 md:py-12">
         <div
           className="absolute inset-0 bg-cover bg-center"
           style={{ backgroundImage: 'url(https://res.cloudinary.com/dqph2qm49/image/upload/v1773096333/rocketMedia/ecommerce_wpqgrm.webp)' }}
